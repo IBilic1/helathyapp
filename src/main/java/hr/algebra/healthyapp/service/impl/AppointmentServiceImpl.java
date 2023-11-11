@@ -5,6 +5,7 @@ import hr.algebra.healthyapp.repository.AppointmentRepository;
 import hr.algebra.healthyapp.repository.UserRepository;
 import hr.algebra.healthyapp.service.AppointmentService;
 import hr.algebra.healthyapp.model.User;
+import hr.algebra.healthyapp.user.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,13 +41,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsByUser(Long userId) {
-        return appointmentRepository.findAllByPatientId(userId);
+    public List<Appointment> getAppointmentsByUser(String username) {
+        User user = userRepository.findByEmail(username).orElseThrow(RuntimeException::new);
+        return appointmentRepository.findAllByPatientId(user.getId());
     }
 
     @Override
     public List<Appointment> getAppointmentsByDoctor(String username) {
-        User doctor = userRepository.findByEmail(username).orElseThrow(RuntimeException::new);
-        return appointmentRepository.findAllByDoctorId(doctor.getId());
+        User user = userRepository.findByEmail(username).orElseThrow(RuntimeException::new);
+        if(user.getRole() == Role.ADMIN){
+            return appointmentRepository.findAllByDoctorId(user.getId());
+        }
+        return appointmentRepository.findAllByPatientId(user.getId());
     }
 }

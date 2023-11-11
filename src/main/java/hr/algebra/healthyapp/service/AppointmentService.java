@@ -13,7 +13,7 @@ public interface AppointmentService {
 
     Optional<Appointment> getAppointment(Long id);
 
-    List<Appointment> getAppointmentsByUser(Long userId);
+    List<Appointment> getAppointmentsByUser(String username);
 
     List<Appointment> getAppointmentsByDoctor(String username);
 }
