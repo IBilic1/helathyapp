@@ -1,6 +1,5 @@
 package hr.algebra.healthyapp.dto;
 
-import hr.algebra.healthyapp.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

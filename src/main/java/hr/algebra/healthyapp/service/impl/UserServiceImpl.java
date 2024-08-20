@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllPatient() {
-        return userRepository.findAll().stream().filter((patinent) ->patinent.getRole() == Role.USER).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .filter((patient) -> patient.getRole() == Role.USER)
+                .collect(Collectors.toList());
     }
 }

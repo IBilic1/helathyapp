@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class MedicineServiceImpl implements MedicineService {
 
-    private MedicineRepository medicineRepository;
+    private final MedicineRepository medicineRepository;
 
     @Autowired
     public MedicineServiceImpl(MedicineRepository medicineRepository) {
@@ -21,26 +21,21 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     public void saveMedicine(Medicine medicine) {
-        medicineRepository.saveMedicine(medicine);
+        medicineRepository.save(medicine);
     }
 
     @Override
     public void deleteMedicine(Long medicineId) {
-        medicineRepository.deleteMedicine(medicineId);
+        medicineRepository.deleteById(medicineId);
     }
 
     @Override
     public Optional<Medicine> getMedicine(Long id) {
-        return medicineRepository.getMedicine(id);
+        return medicineRepository.findById(id);
     }
 
     @Override
     public List<Medicine> getAllMedicines() {
-        return medicineRepository.getAllMedicine();
-    }
-
-    @Override
-    public void batchUpdateMedicine(List<Medicine> medicines) {
-        medicineRepository.batchUpdateMedicine(medicines);
+        return medicineRepository.findAll();
     }
 }

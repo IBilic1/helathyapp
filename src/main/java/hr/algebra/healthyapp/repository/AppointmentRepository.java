@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
     List<Appointment> findAllByPatientIdOrDoctorId(Integer patientId, Integer doctorId);
-
 }

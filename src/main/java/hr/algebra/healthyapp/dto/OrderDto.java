@@ -1,6 +1,7 @@
 package hr.algebra.healthyapp.dto;
 
-import hr.algebra.healthyapp.model.Medicine;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +15,13 @@ public class OrderDto {
 
     private Long id;
 
+    @NotBlank
     private String description;
 
+    @Positive
     private Double amount;
 
+    @Positive
     private Double doseGap;
 
     private MedicineDto medicine;

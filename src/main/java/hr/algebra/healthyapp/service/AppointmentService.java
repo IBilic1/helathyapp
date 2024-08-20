@@ -5,6 +5,7 @@ import hr.algebra.healthyapp.model.Appointment;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface AppointmentService {
 
     void saveAppointment(Appointment appointment, String name);

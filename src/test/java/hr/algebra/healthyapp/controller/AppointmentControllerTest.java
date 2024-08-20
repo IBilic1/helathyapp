@@ -1,9 +1,14 @@
 package hr.algebra.healthyapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import hr.algebra.healthyapp.dto.AppointmentDto;
+import hr.algebra.healthyapp.dto.UserDto;
 import hr.algebra.healthyapp.mapper.AppointmentMapper;
+import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.service.AppointmentService;
+import hr.algebra.healthyapp.user.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -20,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
@@ -43,9 +49,30 @@ class AppointmentControllerTest {
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
+    private AppointmentDto appointmentDto;
+
     @BeforeEach
     public void beforeAll() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(appointmentController).build();
+
+        UserDto doctor = UserDto.builder()
+                .firstName("Doctor")
+                .lastName("Doe")
+                .email("doctor@example.com")
+                .role(Role.ADMIN)
+                .build();
+        UserDto patient = UserDto.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john@example.com")
+                .role(Role.USER)
+                .build();
+        appointmentDto = AppointmentDto.builder()
+                .endDateTime(LocalDateTime.now())
+                .startDateTime(LocalDateTime.now())
+                .doctor(doctor)
+                .patient(patient)
+                .address("Address").build();
     }
 
     @Test
@@ -70,7 +97,6 @@ class AppointmentControllerTest {
     void testCreateAppointment() throws Exception {
         Principal mockPrincipal = Mockito.mock(Principal.class);
         Mockito.when(mockPrincipal.getName()).thenReturn("me");
-        AppointmentDto appointmentDto = new AppointmentDto();
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/v1/appointment")
@@ -89,7 +115,6 @@ class AppointmentControllerTest {
     void testUpdateAppointment() throws Exception {
         Principal mockPrincipal = Mockito.mock(Principal.class);
         Mockito.when(mockPrincipal.getName()).thenReturn("me");
-        AppointmentDto appointmentDto = new AppointmentDto();
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/v1/appointment")
@@ -123,7 +148,11 @@ class AppointmentControllerTest {
 
     private static String asJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JavaTimeModule javaTimeModule = new JavaTimeModule();
+            objectMapper.registerModule(javaTimeModule);
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

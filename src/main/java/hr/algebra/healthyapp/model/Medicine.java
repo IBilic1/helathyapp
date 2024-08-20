@@ -20,7 +20,9 @@ public class Medicine {
 
     private String description;
 
-    private Long manufacturerId;
+    @ManyToOne
+    @JoinColumn(name = "manufacturerId")
+    private Manufacturer manufacturer;
 
     @Builder.Default
     private Double quantityInStock = 0D;

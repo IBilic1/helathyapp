@@ -3,6 +3,7 @@ package hr.algebra.healthyapp.service.impl;
 import hr.algebra.healthyapp.model.Manufacturer;
 import hr.algebra.healthyapp.repository.ManufacturerRepository;
 import hr.algebra.healthyapp.service.ManufacturerService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Service
 public class ManufacturerServiceImpl implements ManufacturerService {
 
-    private ManufacturerRepository manufacturerRepository;
+    private final ManufacturerRepository manufacturerRepository;
 
     @Autowired
     public ManufacturerServiceImpl(ManufacturerRepository manufacturerRepository) {
@@ -21,21 +22,21 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     public void saveManufacturer(Manufacturer manufacturer) {
-        manufacturerRepository.saveManufacturer(manufacturer);
+        manufacturerRepository.save(manufacturer);
     }
 
     @Override
     public void deleteManufacturer(Long manufacturerId) {
-        manufacturerRepository.deleteManufacturer(manufacturerId);
+        manufacturerRepository.deleteById(manufacturerId);
     }
 
     @Override
     public Optional<Manufacturer> getManufacturer(Long id) {
-        return manufacturerRepository.getManufacturer(id);
+        return manufacturerRepository.findById(id);
     }
 
     @Override
     public List<Manufacturer> getAllManufacturer() {
-        return manufacturerRepository.getAllManufacturer();
+        return manufacturerRepository.findAll();
     }
 }

@@ -6,20 +6,24 @@ import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.AppointmentRepository;
 import hr.algebra.healthyapp.repository.UserRepository;
 import hr.algebra.healthyapp.service.AppointmentService;
-import hr.algebra.healthyapp.user.Role;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private AppointmentRepository appointmentRepository;
+    private final AppointmentRepository appointmentRepository;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, UserRepository userRepository) {
+        this.appointmentRepository = appointmentRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void saveAppointment(Appointment appointment, String name) {

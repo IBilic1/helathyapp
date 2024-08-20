@@ -1,27 +1,28 @@
 package hr.algebra.healthyapp.service;
 
-import hr.algebra.healthyapp.HealthyappApplication;
-import hr.algebra.healthyapp.model.Medicine;
-import hr.algebra.healthyapp.model.Order;
-import hr.algebra.healthyapp.model.Prescription;
-import hr.algebra.healthyapp.model.User;
-import hr.algebra.healthyapp.repository.OrderRepository;
+import hr.algebra.healthyapp.model.*;
+import hr.algebra.healthyapp.repository.MedicineRepository;
 import hr.algebra.healthyapp.repository.PrescriptionRepository;
 import hr.algebra.healthyapp.repository.UserRepository;
 import hr.algebra.healthyapp.user.Role;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = HealthyappApplication.class)
+@SpringBootTest
 @ActiveProfiles("unit")
 public class PrescriptionServiceTest {
 
@@ -32,10 +33,29 @@ public class PrescriptionServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private MedicineRepository medicineRepository;
 
     @Autowired
     private PrescriptionService prescriptionService;
+
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
+
+    @BeforeAll
+    public static void beforeAll() {
+        postgres.start();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        postgres.stop();
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 
     private Prescription prescription;
 
@@ -45,6 +65,9 @@ public class PrescriptionServiceTest {
 
     @BeforeEach
     public void beforeEach() {
+        prescriptionRepository.deleteAll();
+        userRepository.deleteAll();
+
         doctor = User.builder()
                 .firstName("Doctor")
                 .lastName("Doe")
@@ -64,8 +87,11 @@ public class PrescriptionServiceTest {
         prescription = Prescription.builder()
                 .patient(patient)
                 .doctor(doctor)
-                .id(1L)
                 .build();
+
+        userRepository.save(doctor);
+        userRepository.save(patient);
+        prescriptionRepository.save(prescription);
     }
 
     @Test
@@ -83,17 +109,14 @@ public class PrescriptionServiceTest {
     void updatePrescription_ValidPrescription_ShouldUpdatePrescription() {
         // Arrange
         Order order = Order.builder()
-                .id(1L)
                 .amount(10D)
                 .description("DESC")
                 .doseGap(5D)
-                .medicine(Medicine.builder().id(1L).name("Linex").manufacturerId(1L).description("D").build())
                 .build();
         Prescription prescriptionToUpdate = Prescription.builder()
                 .doctor(doctor)
                 .patient(patient)
-                .id(1L)
-                .orders(Arrays.asList(order)).build();
+                .orders(Collections.singletonList(order)).build();
         // Act
         Prescription updatedPrescription = prescriptionService.savePrescription(prescriptionToUpdate, this.prescription.getDoctor().getEmail());
 
@@ -136,8 +159,8 @@ public class PrescriptionServiceTest {
         List<Prescription> result = prescriptionService.getPrescriptionsByUser(doctor.getEmail());
 
         // Assert
-        assertEquals(3, result.size());
-        assertEquals(result.get(0).getDoctor().getEmail(), doctor.getEmail());
+        assertEquals(1, result.size());
+        assertEquals(result.getFirst().getDoctor().getEmail(), doctor.getEmail());
     }
 
     @Test
@@ -146,7 +169,7 @@ public class PrescriptionServiceTest {
         List<Prescription> result = prescriptionService.getPrescriptionsByUser(patient.getEmail());
 
         // Assert
-        assertEquals(2, result.size());
-        assertEquals(result.get(0).getPatient().getEmail(), patient.getEmail());
+        assertEquals(1, result.size());
+        assertEquals(result.getFirst().getPatient().getEmail(), patient.getEmail());
     }
 }

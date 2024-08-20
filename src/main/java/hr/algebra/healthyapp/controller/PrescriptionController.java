@@ -3,6 +3,8 @@ package hr.algebra.healthyapp.controller;
 import hr.algebra.healthyapp.dto.PrescriptionDto;
 import hr.algebra.healthyapp.mapper.PrescriptionMapper;
 import hr.algebra.healthyapp.service.PrescriptionService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class PrescriptionController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> createPrescription(@RequestBody PrescriptionDto prescription, Principal principal) {
+    public ResponseEntity<Void> createPrescription(@RequestBody @Valid PrescriptionDto prescription, Principal principal) {
         prescriptionService.savePrescription(
                 prescriptionMapper.destinationToSource(prescription), principal.getName());
         return ResponseEntity.ok().build();
@@ -43,7 +45,7 @@ public class PrescriptionController {
 
     @PutMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> updateAppointment(@RequestBody PrescriptionDto prescription, Principal principal) {
+    public ResponseEntity<Void> updateAppointment(@RequestBody @Valid PrescriptionDto prescription, Principal principal) {
         prescriptionService.savePrescription(
                 prescriptionMapper.destinationToSource(prescription), principal.getName());
         return ResponseEntity.ok().build();
@@ -51,7 +53,7 @@ public class PrescriptionController {
 
     @DeleteMapping("/{prescriptionId}")
     @Secured("ADMIN")
-    public ResponseEntity<Void> deleteAppointment(@PathVariable Long prescriptionId) {
+    public ResponseEntity<Void> deleteAppointment(@PathVariable @Positive Long prescriptionId) {
         prescriptionService.deletePrescription(prescriptionId);
         return ResponseEntity.ok().build();
     }

@@ -3,7 +3,6 @@ package hr.algebra.healthyapp.service.impl;
 import hr.algebra.healthyapp.exception.EntityDoesNotExistsException;
 import hr.algebra.healthyapp.model.Prescription;
 import hr.algebra.healthyapp.model.User;
-import hr.algebra.healthyapp.repository.OrderRepository;
 import hr.algebra.healthyapp.repository.PrescriptionRepository;
 import hr.algebra.healthyapp.repository.UserRepository;
 import hr.algebra.healthyapp.service.PrescriptionService;
@@ -16,17 +15,14 @@ import java.util.Optional;
 @Service
 public class PrescriptionServiceImpl implements PrescriptionService {
 
-    private PrescriptionRepository prescriptionRepository;
+    private final PrescriptionRepository prescriptionRepository;
 
-    private UserRepository userRepository;
-
-    private OrderRepository orderRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository, OrderRepository orderRepository) {
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository, UserRepository userRepository) {
         this.prescriptionRepository = prescriptionRepository;
         this.userRepository = userRepository;
-        this.orderRepository = orderRepository;
     }
 
     @Override

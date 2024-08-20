@@ -1,23 +1,13 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-    url: jdbc:h2:mem:test;INIT=runscript from './support/data.sql'
-  h2:
-    console.enabled: true
   jpa:
     defer-datasource-initialization: 'true'
-    database-platform: org.hibernate.dialect.H2Dialect
-    database: h2
     hibernate:
       format_sql: 'true'
-      ddl-auto: none
-      dialect: org.hibernate.dialect.H2Dialect
+      ddl-auto: create
     show-sql: 'true'
 application:
   security:
     expiration: '84600000'
-    secretKey: dUJvTlpIWlAwb3JqeWk4YnRuTHd5cVFXVW1uaW5XS0hGeWUrOXRPYTdjWT0=
+    secretKey: ${SECRET_KEY}
     refreshToken:
       expiration: '604800000'

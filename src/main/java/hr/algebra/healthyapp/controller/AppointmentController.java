@@ -3,6 +3,8 @@ package hr.algebra.healthyapp.controller;
 import hr.algebra.healthyapp.dto.AppointmentDto;
 import hr.algebra.healthyapp.mapper.AppointmentMapper;
 import hr.algebra.healthyapp.service.AppointmentService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -31,21 +33,21 @@ public class AppointmentController {
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> createAppointment(@RequestBody AppointmentDto appointment, Principal principal) {
+    public ResponseEntity<Void> createAppointment(@RequestBody @Valid AppointmentDto appointment, Principal principal) {
         appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getName());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> updateAppointment(@RequestBody AppointmentDto appointment, Principal principal) {
+    public ResponseEntity<Void> updateAppointment(@RequestBody @Valid AppointmentDto appointment, Principal principal) {
         appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getName());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{appointmentId}")
     @Secured("ADMIN")
-    public ResponseEntity<Void> deleteAppointment(@PathVariable Long appointmentId) {
+    public ResponseEntity<Void> deleteAppointment(@PathVariable @Positive Long appointmentId) {
         appointmentService.deleteAppointment(appointmentId);
         return ResponseEntity.ok().build();
     }
