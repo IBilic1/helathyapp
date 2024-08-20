@@ -16,6 +16,6 @@ spring:
 application:
   security:
     expiration: '84600000'
-    secretKey: dUJvTlpIWlAwb3JqeWk4YnRuTHd5cVFXVW1uaW5XS0hGeWUrOXRPYTdjWT0=
+    secretKey: ${SECRET_KEY}
     refreshToken:
       expiration: '604800000'
