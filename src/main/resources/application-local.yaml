@@ -1,9 +1,16 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret:  ${GITHUB_CLIENT_SECRET}
   datasource:
     driver-class-name: org.postgresql.Driver
     username: user
     url: jdbc:postgresql://localhost:5432/healthcent
-    password: Pa$$wOrd
+    password: secret
   jpa:
     properties:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -13,9 +20,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: 'true'
-application:
-  security:
-    expiration: '84600000'
-    secretKey: ${SECRET_KEY}
-    refreshToken:
-      expiration: '604800000'
+
+allowed-origins:
+  - http://localhost:3000

@@ -13,9 +13,3 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: 'true'
-application:
-  security:
-    expiration: '84600000'
-    secretKey: ${SECRET_KEY}
-    refreshToken:
-      expiration: '604800000'

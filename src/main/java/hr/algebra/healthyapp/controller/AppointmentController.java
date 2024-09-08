@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/appointment")
+@RequestMapping("/appointment")
 @AllArgsConstructor
 @Secured({"USER", "ADMIN"})
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
