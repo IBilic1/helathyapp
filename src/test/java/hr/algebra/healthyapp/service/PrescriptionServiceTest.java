@@ -1,6 +1,8 @@
 package hr.algebra.healthyapp.service;
 
-import hr.algebra.healthyapp.model.*;
+import hr.algebra.healthyapp.model.Order;
+import hr.algebra.healthyapp.model.Prescription;
+import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.MedicineRepository;
 import hr.algebra.healthyapp.repository.PrescriptionRepository;
 import hr.algebra.healthyapp.repository.UserRepository;
@@ -69,18 +71,14 @@ public class PrescriptionServiceTest {
         userRepository.deleteAll();
 
         doctor = User.builder()
-                .firstName("Doctor")
-                .lastName("Doe")
+                .name("Doctor Doe")
                 .email("doctor@example.com")
-                .password("password")
                 .role(Role.ADMIN)
                 .build();
 
         patient = User.builder()
-                .firstName("John")
-                .lastName("Doe")
+                .name("John Doe")
                 .email("john@example.com")
-                .password("password")
                 .role(Role.USER)
                 .build();
 

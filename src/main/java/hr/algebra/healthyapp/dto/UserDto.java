@@ -14,10 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
     @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
+    private String name;
 
     @NotBlank
     private String email;

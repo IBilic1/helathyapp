@@ -17,7 +17,7 @@ import java.util.List;
 @Secured("ADMIN")
 public class ManufacturerController {
 
-    private ManufacturerService manufacturerService;
+    private final ManufacturerService manufacturerService;
 
     @Autowired
     public ManufacturerController(ManufacturerService manufacturerService) {
@@ -30,7 +30,7 @@ public class ManufacturerController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createManufacturer(@RequestBody  @Valid ManufacturerDto manufacturer) {
+    public ResponseEntity<Void> createManufacturer(@RequestBody @Valid ManufacturerDto manufacturer) {
         manufacturerService.saveManufacturer(ManufacturerMapper.INSTANCE.destinationToSource(manufacturer));
         return ResponseEntity.ok().build();
     }

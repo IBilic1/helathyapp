@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("allowed-origins")
+    @Value("${allowed-origins}")
     private String[] allowedOrigins;
 
     @Override

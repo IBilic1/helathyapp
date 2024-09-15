@@ -11,3 +11,11 @@ application:
     secretKey: ${SECRET_KEY}
     refreshToken:
       expiration: '604800000'
+
+security:
+  allowed-origins:
+    - http://localhost:3000
+  default-error-url:
+    - http://localhost:3000/error
+  default-success-url:
+    - http://localhost:3000/home

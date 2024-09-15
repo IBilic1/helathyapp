@@ -65,17 +65,13 @@ class AppointmentServiceTest {
         userRepository.deleteAll();
 
         doctor = User.builder()
-                .firstName("Doctor")
-                .lastName("Doe")
+                .name("Doctor DOe")
                 .email("doctor@example.com")
-                .password("password")
                 .role(Role.ADMIN)
                 .build();
         patient = User.builder()
-                .firstName("John")
-                .lastName("Doe")
+                .name("John Doe")
                 .email("john@example.com")
-                .password("password")
                 .role(Role.USER)
                 .build();
 
