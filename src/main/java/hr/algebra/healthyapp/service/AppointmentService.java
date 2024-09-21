@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface AppointmentService {
 
-    void saveAppointment(Appointment appointment, String name);
+    void saveAppointment(Appointment appointment, String email);
 
-    void deleteAppointment( Long appointmentId);
+    void deleteAppointment(Long appointmentId);
 
     Optional<Appointment> getAppointment(Long id);
 
-    List<Appointment> getAppointmentsByUser(String username);
+    List<Appointment> getAppointmentsByUser(String email);
 }

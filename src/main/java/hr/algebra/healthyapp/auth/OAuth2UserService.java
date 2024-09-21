@@ -2,20 +2,15 @@ package hr.algebra.healthyapp.auth;
 
 import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.UserRepository;
-import hr.algebra.healthyapp.user.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
@@ -50,7 +45,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         User user = userOptional
                 .map(existingUser -> updateExistingUser(existingUser, userInfoDto))
                 .orElseGet(() -> registerNewUser(userInfoDto));
-        return oAuth2User;
+        return new CustomOAuth2User(oAuth2User);
     }
 
     private User registerNewUser(User userInfoDto) {

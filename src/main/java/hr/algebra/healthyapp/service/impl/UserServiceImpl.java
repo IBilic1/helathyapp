@@ -23,6 +23,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> changeAuthority(User user) {
+        Optional<User> oUserToUpdate = userRepository.findByEmail(user.getEmail());
+        if (oUserToUpdate.isEmpty()) {
+            return Optional.empty();
+        }
+
+        User userToUpdate = oUserToUpdate.get();
+        userToUpdate.setRole(user.getRole());
+        userRepository.save(userToUpdate);
+        return Optional.of(userToUpdate);
+    }
+
+    @Override
     public List<User> getAllPatient() {
         return userRepository.findAll().stream()
                 .filter((patient) -> patient.getRole() == Role.USER)

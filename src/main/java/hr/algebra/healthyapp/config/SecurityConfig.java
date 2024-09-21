@@ -1,15 +1,22 @@
 package hr.algebra.healthyapp.config;
 
 import hr.algebra.healthyapp.auth.OAuth2UserService;
+import hr.algebra.healthyapp.repository.CustomCsrfTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -19,21 +26,41 @@ public class SecurityConfig {
 
     private final OAuth2UserService userDetailsService;
 
-    @Value("${default-success}")
+    @Value("${security.urls.default-success}")
     private String defaultSuccessUrl;
 
-    @Value("${default-error}")
+    @Value("${security.urls.default-error}")
     private String defaultErrorUrl;
 
+    @Value("${security.urls.allowed-origins}")
+    private String[] allowedOrigins;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .csrf((csrf) -> csrf
+                        .csrfTokenRepository(new CustomCsrfTokenRepository())
+                )
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry.anyRequest().authenticated())
-                .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:3000/home", true).failureUrl("http://localhost:3000/error")
-                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userDetailsService)));
-
+                .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl(defaultSuccessUrl, true).failureUrl(defaultErrorUrl)
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userDetailsService)))
+                .oidcLogout((logout) -> logout
+                        .backChannel(Customizer.withDefaults())
+                );
         return http.build();
+    }
+
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

@@ -4,8 +4,31 @@ spring:
       client:
         registration:
           github:
-            clientId: ${GITHUB_CLIENT_ID}
-            clientSecret:  ${GITHUB_CLIENT_SECRET}
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope: user:email,read:user
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            provider: github
+          google:
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile,email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            provider: google
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
   datasource:
     driver-class-name: org.postgresql.Driver
     username: user
@@ -18,9 +41,11 @@ spring:
         format_sql: 'true'
       database: postgresql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: 'true'
 
-allowed-origins: http://localhost:3000
-default-error: http://localhost:3000/error
-default-success: http://localhost:3000/home
+security:
+  urls:
+    allowed-origins: http://localhost:3000
+    default-error: http://localhost:3000/error
+    default-success: http://localhost:3000/home

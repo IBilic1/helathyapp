@@ -1,7 +1,9 @@
 package hr.algebra.healthyapp.controller;
 
+import hr.algebra.healthyapp.auth.CustomOAuth2User;
 import hr.algebra.healthyapp.dto.AppointmentDto;
 import hr.algebra.healthyapp.mapper.AppointmentMapper;
+import hr.algebra.healthyapp.model.Appointment;
 import hr.algebra.healthyapp.service.AppointmentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -9,9 +11,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,22 +28,22 @@ public class AppointmentController {
     private AppointmentMapper appointmentMapper;
 
     @GetMapping
-    public ResponseEntity<List<AppointmentDto>> getAppointmentsByUser(Principal principal) {
-        return ResponseEntity.ok(appointmentMapper.destinationToSource(
-                appointmentService.getAppointmentsByUser(principal.getName())));
+    public ResponseEntity<List<AppointmentDto>> getAppointmentsByUser(@AuthenticationPrincipal CustomOAuth2User principal) {
+        List<Appointment> appointmentsByUser = appointmentService.getAppointmentsByUser(principal.getEmail());
+        return ResponseEntity.ok(appointmentMapper.destinationToSource(appointmentsByUser));
     }
 
     @PostMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> createAppointment(@RequestBody @Valid AppointmentDto appointment, Principal principal) {
-        appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getName());
+    public ResponseEntity<Void> createAppointment(@RequestBody @Valid AppointmentDto appointment, @AuthenticationPrincipal CustomOAuth2User principal) {
+        appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
     @Secured("ADMIN")
-    public ResponseEntity<Void> updateAppointment(@RequestBody @Valid AppointmentDto appointment, Principal principal) {
-        appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getName());
+    public ResponseEntity<Void> updateAppointment(@RequestBody @Valid AppointmentDto appointment, @AuthenticationPrincipal CustomOAuth2User principal) {
+        appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getEmail());
         return ResponseEntity.ok().build();
     }
 

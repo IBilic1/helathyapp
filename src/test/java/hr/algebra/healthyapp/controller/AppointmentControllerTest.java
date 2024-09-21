@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import hr.algebra.healthyapp.dto.AppointmentDto;
 import hr.algebra.healthyapp.dto.UserDto;
 import hr.algebra.healthyapp.mapper.AppointmentMapper;
-import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.service.AppointmentService;
 import hr.algebra.healthyapp.user.Role;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,14 +55,12 @@ class AppointmentControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(appointmentController).build();
 
         UserDto doctor = UserDto.builder()
-                .firstName("Doctor")
-                .lastName("Doe")
+                .name("Doctor")
                 .email("doctor@example.com")
                 .role(Role.ADMIN)
                 .build();
         UserDto patient = UserDto.builder()
-                .firstName("John")
-                .lastName("Doe")
+                .name("Doe")
                 .email("john@example.com")
                 .role(Role.USER)
                 .build();

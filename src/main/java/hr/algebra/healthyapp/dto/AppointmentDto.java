@@ -1,9 +1,9 @@
 package hr.algebra.healthyapp.dto;
 
+import hr.algebra.healthyapp.validator.EndDateAfterStartDate;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,19 +15,20 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EndDateAfterStartDate
 public class AppointmentDto {
 
     private Long id;
 
-    @NotNull(message = "1")
-    @PastOrPresent(message = "2")
+    @NotNull(message = "Start date and time must not be null")
+    @FutureOrPresent(message = "Start date and time must be in the future or present")
     private LocalDateTime startDateTime;
 
-    @NotNull(message = "3")
-    @PastOrPresent(message = "4")
+    @NotNull(message = "End date and time must not be null")
+    @FutureOrPresent(message = "End date and time must be in the future or present")
     private LocalDateTime endDateTime;
 
-    @NotBlank(message = "5")
+    @NotBlank(message = "Address must not be blank")
     private String address;
 
     private UserDto doctor;

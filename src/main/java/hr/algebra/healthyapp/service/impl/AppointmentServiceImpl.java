@@ -1,6 +1,6 @@
 package hr.algebra.healthyapp.service.impl;
 
-import hr.algebra.healthyapp.exception.EntityDoesNotExistsException;
+import hr.algebra.healthyapp.exception.AppointmentNotFoundException;
 import hr.algebra.healthyapp.model.Appointment;
 import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.AppointmentRepository;
@@ -26,11 +26,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public void saveAppointment(Appointment appointment, String name) {
-        User doctor = userRepository.findByEmail(name).orElseThrow(() ->
-                new EntityDoesNotExistsException("Doctor with email %s does not exists", appointment.getDoctor().getEmail()));
+    public void saveAppointment(Appointment appointment, String email) {
+        User doctor = userRepository.findByEmail(email).orElseThrow(() ->
+                new AppointmentNotFoundException("Doctor with email %s does not exists", appointment.getDoctor().getEmail()));
         User patient = userRepository.findByEmail(appointment.getPatient().getEmail()).orElseThrow(() ->
-                new EntityDoesNotExistsException("Patient with email %s does not exists", appointment.getPatient().getEmail()));
+                new AppointmentNotFoundException("Patient with email %s does not exists", appointment.getPatient().getEmail()));
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
         appointmentRepository.save(appointment);
@@ -39,7 +39,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void deleteAppointment(Long appointmentId) {
         Appointment appointmentToDelete = getAppointment(appointmentId).orElseThrow(() ->
-                new EntityDoesNotExistsException("Appointment id %s does not exists", appointmentId.toString()));
+                new AppointmentNotFoundException("Appointment id %s does not exists", appointmentId.toString()));
         appointmentRepository.delete(appointmentToDelete);
     }
 
@@ -49,9 +49,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsByUser(String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(() ->
-                new EntityDoesNotExistsException("Doctor with username %s does not exists", username));
+    public List<Appointment> getAppointmentsByUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new AppointmentNotFoundException("Doctor with username %s does not exists", email));
         return appointmentRepository.findAllByPatientIdOrDoctorId(user.getId(), user.getId());
     }
 }
