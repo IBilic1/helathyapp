@@ -1,7 +1,11 @@
 job:
   cron:
     calculateQuantityInStock: '*/15 * * * * *'
-
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
 jdbc:
   medicine:
     createMedicine: >

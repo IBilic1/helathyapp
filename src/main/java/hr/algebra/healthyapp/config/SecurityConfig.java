@@ -1,5 +1,6 @@
 package hr.algebra.healthyapp.config;
 
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import hr.algebra.healthyapp.auth.OAuth2UserService;
 import hr.algebra.healthyapp.repository.CustomCsrfTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -40,15 +40,14 @@ public class SecurityConfig {
         http
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf((csrf) -> csrf
+                        .ignoringRequestMatchers("/logout") // Disable CSRF protection for logout
                         .csrfTokenRepository(new CustomCsrfTokenRepository())
                 )
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry.anyRequest().authenticated())
+                        authorizationManagerRequestMatcherRegistry
+                                .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl(defaultSuccessUrl, true).failureUrl(defaultErrorUrl)
-                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userDetailsService)))
-                .oidcLogout((logout) -> logout
-                        .backChannel(Customizer.withDefaults())
-                );
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userDetailsService)));
         return http.build();
     }
 
