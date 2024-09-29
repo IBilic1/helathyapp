@@ -1,42 +1,5 @@
-job:
-  cron:
-    calculateQuantityInStock: '*/15 * * * * *'
 logging:
   level:
     org:
       springframework:
         security: debug
-jdbc:
-  medicine:
-    createMedicine: >
-      INSERT INTO medicine (name, description, manufacturer_id) VALUES (:name, :description, :manufacturerId)
-    updateMedicine: >
-      UPDATE medicine
-      SET name = :name, description = :description, manufacturer_id =:manufacturerId
-      WHERE id = :id
-    getMedicine: >
-      SELECT medicine.id, medicine.name, medicine.description, medicine.manufacturer_id
-      FROM medicine JOIN manufacturer ON manufacturer_id = manufacturer.id
-      WHERE medicine.id = :id
-    getALLMedicine: >
-      SELECT medicine.id, medicine.name, medicine.description, medicine.manufacturer_id
-      FROM medicine JOIN manufacturer ON manufacturer_id = manufacturer.id
-    deleteMedicine: >
-      DELETE FROM medicine WHERE id = :id
-    getMedicineByManufacturer: >
-      SELECT  medicine.id, medicine.name, medicine.description, medicine.manufacturer_id
-      FROM medicine JOIN manufacturer ON manufacturer_id = manufacturer.id
-      WHERE manufacturer_id = :manufacturerId
-  manufacturer:
-    createManufacturer: >
-      INSERT INTO manufacturer (name, address) VALUES (:name, :address)
-    updateManufacturer: >
-      UPDATE manufacturer
-      SET name = :name, address = :address
-      WHERE id = :id
-    getManufacturer: >
-      SELECT * FROM manufacturer WHERE id = :id
-    getALLManufacturer: >
-      SELECT * FROM manufacturer
-    deleteManufacturer: >
-      DELETE FROM manufacturer WHERE id = :id

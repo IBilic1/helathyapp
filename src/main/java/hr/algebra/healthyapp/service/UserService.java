@@ -11,5 +11,5 @@ public interface UserService {
 
     Optional<User> changeAuthority(User user);
 
-    List<User> getAllPatient();
+    List<User> getAllUsers();
 }

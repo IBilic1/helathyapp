@@ -4,7 +4,6 @@ import hr.algebra.healthyapp.dto.AppointmentDto;
 import hr.algebra.healthyapp.model.Appointment;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 

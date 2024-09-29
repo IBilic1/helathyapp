@@ -1,5 +1,6 @@
 package hr.algebra.healthyapp.advice;
 
+import hr.algebra.healthyapp.exception.AppointmentExistsException;
 import hr.algebra.healthyapp.exception.AppointmentNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,5 +32,11 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<String> handleEntityDoesNotExistsException(AppointmentNotFoundException entityDoesNotExists) {
         LOG.error(entityDoesNotExists.getMessage(), entityDoesNotExists);
         return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler({AppointmentExistsException.class})
+    public ResponseEntity<String> handleAppointmentExistsException(AppointmentExistsException appointmentExistsException) {
+        LOG.error(appointmentExistsException.getMessage(), appointmentExistsException);
+        return ResponseEntity.badRequest().body(appointmentExistsException.getMessage());
     }
 }

@@ -1,18 +1,19 @@
 package hr.algebra.healthyapp.controller;
 
+import hr.algebra.healthyapp.auth.CustomOAuth2User;
 import hr.algebra.healthyapp.dto.UserDto;
 import hr.algebra.healthyapp.mapper.UserMapper;
 import hr.algebra.healthyapp.model.User;
+import hr.algebra.healthyapp.service.AppointmentService;
 import hr.algebra.healthyapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -21,22 +22,24 @@ public class UserController {
 
     private UserService userService;
 
+    private AppointmentService appointmentService;
+
     @GetMapping
     @Secured("ADMIN")
-    public ResponseEntity<UserDto> getUsersByDoctor(Principal principal) {
-        return ResponseEntity.of(userService.getUser(principal.getName()).map(UserMapper.INSTANCE::sourceToDestination));
+    public ResponseEntity<List<UserDto>> getUsersByDoctor(@AuthenticationPrincipal CustomOAuth2User principal) {
+        Set<User> patients = appointmentService.getPatientByDoctor(principal.getEmail());
+        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(patients.stream().toList()));
     }
 
     @GetMapping("/all")
     @Secured({"ADMIN", "SYSTEM_ADMIN"})
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(userService.getAllPatient()));
+        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(userService.getAllUsers()));
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<UserDto> getAllUsers(@AuthenticationPrincipal OAuth2User principal) {
-        Object email = principal.getAttributes().get("email");
-        return ResponseEntity.of(userService.getUser(String.valueOf(email)).map(UserMapper.INSTANCE::sourceToDestination));
+    public ResponseEntity<UserDto> getAllUsers(@AuthenticationPrincipal CustomOAuth2User principal) {
+        return ResponseEntity.of(userService.getUser(principal.getEmail()).map(UserMapper.INSTANCE::sourceToDestination));
     }
 
     @PatchMapping

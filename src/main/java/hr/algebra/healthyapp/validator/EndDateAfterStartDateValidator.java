@@ -10,7 +10,7 @@ public class EndDateAfterStartDateValidator implements ConstraintValidator<EndDa
     @Override
     public boolean isValid(AppointmentDto appointmentDto, ConstraintValidatorContext context) {
         if (appointmentDto.getStartDateTime() == null || appointmentDto.getEndDateTime() == null) {
-            return true; // If either is null, leave that validation to @NotNull
+            return true;
         }
         return appointmentDto.getEndDateTime().isAfter(appointmentDto.getStartDateTime());
     }

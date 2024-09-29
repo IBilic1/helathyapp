@@ -1,8 +1,6 @@
 package hr.algebra.healthyapp.config;
 
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import hr.algebra.healthyapp.auth.OAuth2UserService;
-import hr.algebra.healthyapp.repository.CustomCsrfTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +9,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,15 +38,19 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        CookieCsrfTokenRepository tokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        XorCsrfTokenRequestAttributeHandler delegate = new XorCsrfTokenRequestAttributeHandler();
+        // (optional) set null to opt out of deferred tokens
+        delegate.setCsrfRequestAttributeName(null);
+        CsrfTokenRequestHandler requestHandler = delegate::handle;
         http
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers("/logout") // Disable CSRF protection for logout
-                        .csrfTokenRepository(new CustomCsrfTokenRepository())
+                        .csrfTokenRepository(tokenRepository)
+                        .csrfTokenRequestHandler(requestHandler)
                 )
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry
-                                .anyRequest().authenticated())
+                        authorizationManagerRequestMatcherRegistry.anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl(defaultSuccessUrl, true).failureUrl(defaultErrorUrl)
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(userDetailsService)));
         return http.build();

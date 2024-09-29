@@ -40,12 +40,12 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testGetAllPatient() {
+    void testGetAllUsers() {
         User patient = new User(0, "firstName lastName", "email", Role.USER);
 
         when(userRepository.findAll()).thenReturn(Collections.singletonList(patient));
 
-        List<User> result = userServiceImpl.getAllPatient();
+        List<User> result = userServiceImpl.getAllUsers();
         Assertions.assertEquals(Collections.singletonList(patient), result);
     }
 }

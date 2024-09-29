@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllPatient() {
+    public List<User> getAllUsers() {
         return userRepository.findAll().stream()
                 .filter((patient) -> patient.getRole() == Role.USER)
                 .collect(Collectors.toList());
