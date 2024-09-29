@@ -5,12 +5,16 @@ import hr.algebra.healthyapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -45,6 +49,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         User user = userOptional
                 .map(existingUser -> updateExistingUser(existingUser, userInfoDto))
                 .orElseGet(() -> registerNewUser(userInfoDto));
+
+        List<GrantedAuthority> authorities = new ArrayList<>(oAuth2User.getAuthorities());
+        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
         return new CustomOAuth2User(oAuth2User);
     }
 
