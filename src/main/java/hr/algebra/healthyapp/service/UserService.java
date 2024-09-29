@@ -9,5 +9,7 @@ public interface UserService {
 
     Optional<User> getUser(String email);
 
-    List<User> getAllPatient();
+    Optional<User> changeAuthority(User user);
+
+    List<User> getAllUsers();
 }
