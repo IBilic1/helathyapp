@@ -48,3 +48,6 @@ security:
     allowed-origins: ${ALLOWED_ORIGINS}
     default-error: ${DEFAULT_ERROR_REDIRECT_URL}
     default-success: ${DEFAULT_ERROR_REDIRECT_URL}
+
+application:
+  system-users: ${SYSTEM_USERS}

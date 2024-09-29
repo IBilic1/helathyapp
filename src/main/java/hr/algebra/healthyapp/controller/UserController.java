@@ -31,11 +31,18 @@ public class UserController {
         return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(patients.stream().toList()));
     }
 
+    @GetMapping("/patient/all")
+    @Secured({"ADMIN", "SYSTEM_USER"})
+    public ResponseEntity<List<UserDto>> getAllPatients() {
+        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(userService.getAllPatients()));
+    }
+
     @GetMapping("/all")
-    @Secured({"ADMIN", "SYSTEM_ADMIN"})
+    @Secured({"ADMIN", "SYSTEM_USER"})
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(userService.getAllUsers()));
     }
+
 
     @GetMapping("/user-info")
     public ResponseEntity<UserDto> getAllUsers(@AuthenticationPrincipal CustomOAuth2User principal) {
@@ -43,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping
-    @Secured("SYSTEM_ADMIN")
+    @Secured("SYSTEM_USER")
     public ResponseEntity<UserDto> changeAuthority(@RequestBody UserDto user) {
         User userToUpdate = UserMapper.INSTANCE.destinationToSource(user);
         return ResponseEntity.of(userService.changeAuthority(userToUpdate).map(UserMapper.INSTANCE::sourceToDestination));
