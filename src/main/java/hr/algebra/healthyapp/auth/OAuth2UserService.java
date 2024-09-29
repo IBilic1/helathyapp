@@ -71,7 +71,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private User updateExistingUser(User existingUser, User userInfoDto) {
         existingUser.setName(userInfoDto.getName());
-        existingUser.setRole(userInfoDto.getRole());
         return userRepository.save(existingUser);
     }
 }

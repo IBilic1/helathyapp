@@ -1,5 +1,5 @@
 package hr.algebra.healthyapp.dto;
 
 public enum RoleDto {
-    USER, ADMIN
+    PATIENT, DOCTOR, SYSTEM_USER
 }

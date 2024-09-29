@@ -67,11 +67,11 @@ public class UserServiceImplTest {
         // Arrange
         User user = new User();
         user.setEmail("test@example.com");
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.DOCTOR);
 
         User existingUser = new User();
         existingUser.setEmail("test@example.com");
-        existingUser.setRole(Role.USER);
+        existingUser.setRole(Role.PATIENT);
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
@@ -81,7 +81,7 @@ public class UserServiceImplTest {
 
         // Assert
         assertThat(updatedUser).isPresent();
-        assertThat(updatedUser.get().getRole()).isEqualTo(Role.ADMIN);
+        assertThat(updatedUser.get().getRole()).isEqualTo(Role.DOCTOR);
         verify(userRepository, times(1)).findByEmail(user.getEmail());
         verify(userRepository, times(1)).save(existingUser);
     }
@@ -106,11 +106,11 @@ public class UserServiceImplTest {
     public void testGetAllPatients() {
         // Arrange
         User patient1 = new User();
-        patient1.setRole(Role.USER);
+        patient1.setRole(Role.PATIENT);
         User patient2 = new User();
-        patient2.setRole(Role.USER);
+        patient2.setRole(Role.PATIENT);
         User admin = new User();
-        admin.setRole(Role.ADMIN);
+        admin.setRole(Role.DOCTOR);
 
         when(userRepository.findAll()).thenReturn(List.of(patient1, patient2, admin));
 
@@ -119,7 +119,7 @@ public class UserServiceImplTest {
 
         // Assert
         assertThat(patients).hasSize(2);
-        assertTrue(patients.stream().allMatch(user -> user.getRole() == Role.USER));
+        assertTrue(patients.stream().allMatch(user -> user.getRole() == Role.PATIENT));
         verify(userRepository, times(1)).findAll();
     }
 

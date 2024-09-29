@@ -69,12 +69,12 @@ class AppointmentServiceTest {
         doctor = User.builder()
                 .name("Doctor Doe")
                 .email("doctor@example.com")
-                .role(Role.ADMIN)
+                .role(Role.DOCTOR)
                 .build();
         patient = User.builder()
                 .name("John Doe")
                 .email("john@example.com")
-                .role(Role.USER)
+                .role(Role.PATIENT)
                 .build();
 
         appointment = new Appointment();

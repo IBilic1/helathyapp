@@ -1,5 +1,5 @@
 package hr.algebra.healthyapp.user;
 
 public enum Role {
-    USER, ADMIN, SYSTEM_USER
+    PATIENT, DOCTOR, SYSTEM_USER
 }
