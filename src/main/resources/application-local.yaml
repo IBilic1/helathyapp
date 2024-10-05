@@ -41,7 +41,7 @@ spring:
         format_sql: 'true'
       database: postgresql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: 'true'
 
 security:
@@ -49,3 +49,7 @@ security:
     allowed-origins: http://localhost:3000
     default-error: http://localhost:3000/error
     default-success: http://localhost:3000/home
+
+application:
+  system-users:
+    - ibilic1@racunarstvo.hr

@@ -2,6 +2,7 @@ package hr.algebra.healthyapp.controller;
 
 import hr.algebra.healthyapp.auth.CustomOAuth2User;
 import hr.algebra.healthyapp.dto.UserDto;
+import hr.algebra.healthyapp.mapper.AppointmentMapper;
 import hr.algebra.healthyapp.mapper.UserMapper;
 import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.service.AppointmentService;
@@ -24,28 +25,38 @@ public class UserController {
 
     private AppointmentService appointmentService;
 
+    private UserMapper userMapper;
+
+
     @GetMapping
-    @Secured("ADMIN")
+    @Secured("DOCTOR")
     public ResponseEntity<List<UserDto>> getUsersByDoctor(@AuthenticationPrincipal CustomOAuth2User principal) {
         Set<User> patients = appointmentService.getPatientByDoctor(principal.getEmail());
-        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(patients.stream().toList()));
+        return ResponseEntity.ok(userMapper.destinationToSource(patients.stream().toList()));
+    }
+
+    @GetMapping("/patient/all")
+    @Secured({"DOCTOR", "SYSTEM_USER"})
+    public ResponseEntity<List<UserDto>> getAllPatients() {
+        return ResponseEntity.ok(userMapper.destinationToSource(userService.getAllPatients()));
     }
 
     @GetMapping("/all")
-    @Secured({"ADMIN", "SYSTEM_ADMIN"})
+    @Secured({"DOCTOR", "SYSTEM_USER"})
     public ResponseEntity<List<UserDto>> getAllUsers() {
-        return ResponseEntity.ok(UserMapper.INSTANCE.destinationToSource(userService.getAllUsers()));
+        return ResponseEntity.ok(userMapper.destinationToSource(userService.getAllUsers()));
     }
+
 
     @GetMapping("/user-info")
     public ResponseEntity<UserDto> getAllUsers(@AuthenticationPrincipal CustomOAuth2User principal) {
-        return ResponseEntity.of(userService.getUser(principal.getEmail()).map(UserMapper.INSTANCE::sourceToDestination));
+        return ResponseEntity.of(userService.getUser(principal.getEmail()).map(userMapper::sourceToDestination));
     }
 
     @PatchMapping
-    @Secured("SYSTEM_ADMIN")
+    @Secured("SYSTEM_USER")
     public ResponseEntity<UserDto> changeAuthority(@RequestBody UserDto user) {
-        User userToUpdate = UserMapper.INSTANCE.destinationToSource(user);
-        return ResponseEntity.of(userService.changeAuthority(userToUpdate).map(UserMapper.INSTANCE::sourceToDestination));
+        User userToUpdate = userMapper.destinationToSource(user);
+        return ResponseEntity.of(userService.changeAuthority(userToUpdate).map(userMapper::sourceToDestination));
     }
 }

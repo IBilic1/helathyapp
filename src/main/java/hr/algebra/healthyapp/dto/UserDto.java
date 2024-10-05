@@ -1,6 +1,5 @@
 package hr.algebra.healthyapp.dto;
 
-import hr.algebra.healthyapp.user.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +18,5 @@ public class UserDto {
     @NotBlank
     private String email;
 
-    private Role role;
+    private RoleDto role;
 }

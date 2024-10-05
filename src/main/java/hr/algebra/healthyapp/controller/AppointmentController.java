@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointment")
 @AllArgsConstructor
-@Secured({"USER", "ADMIN"})
+@Secured({"PATIENT", "DOCTOR"})
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class AppointmentController {
 
@@ -34,21 +34,21 @@ public class AppointmentController {
     }
 
     @PostMapping
-    @Secured("ADMIN")
+    @Secured("DOCTOR")
     public ResponseEntity<Void> createAppointment(@RequestBody @Valid AppointmentDto appointment, @AuthenticationPrincipal CustomOAuth2User principal) {
         appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    @Secured("ADMIN")
+    @Secured("DOCTOR")
     public ResponseEntity<Void> updateAppointment(@RequestBody @Valid AppointmentDto appointment, @AuthenticationPrincipal CustomOAuth2User principal) {
         appointmentService.saveAppointment(appointmentMapper.destinationToSource(appointment), principal.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{appointmentId}")
-    @Secured("ADMIN")
+    @Secured("DOCTOR")
     public ResponseEntity<Void> deleteAppointment(@PathVariable @Positive Long appointmentId) {
         appointmentService.deleteAppointment(appointmentId);
         return ResponseEntity.ok().build();

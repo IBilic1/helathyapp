@@ -1,28 +1,33 @@
 package hr.algebra.healthyapp.auth;
 
+import hr.algebra.healthyapp.config.ApplicationProps;
 import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.UserRepository;
+import hr.algebra.healthyapp.user.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static hr.algebra.healthyapp.user.Role.SYSTEM_USER;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@EnableConfigurationProperties(value = ApplicationProps.class)
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+
+    private final ApplicationProps applicationProps;
 
     @Override
     @SneakyThrows
@@ -45,14 +50,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .build();
 
         Optional<User> userOptional = userRepository.findByEmail(userInfoDto.getEmail());
-        log.trace("User is {}", userOptional);
+        boolean isSystemUser = applicationProps.getSystemUsers().stream()
+                .anyMatch(systemEmail -> Objects.equals(systemEmail, userInfoDto.getEmail()));
+        if (isSystemUser) {
+            userInfoDto.setRole(SYSTEM_USER);
+        } else {
+            userInfoDto.setRole(Role.PATIENT);
+        }
         User user = userOptional
                 .map(existingUser -> updateExistingUser(existingUser, userInfoDto))
                 .orElseGet(() -> registerNewUser(userInfoDto));
 
-        List<GrantedAuthority> authorities = new ArrayList<>(oAuth2User.getAuthorities());
-        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
-        return new CustomOAuth2User(oAuth2User);
+        return new CustomOAuth2User(oAuth2User, user.getRole());
     }
 
     private User registerNewUser(User userInfoDto) {

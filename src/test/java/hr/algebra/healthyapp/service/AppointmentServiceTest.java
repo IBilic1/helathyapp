@@ -1,5 +1,6 @@
 package hr.algebra.healthyapp.service;
 
+import hr.algebra.healthyapp.exception.AppointmentExistsException;
 import hr.algebra.healthyapp.model.Appointment;
 import hr.algebra.healthyapp.model.User;
 import hr.algebra.healthyapp.repository.AppointmentRepository;
@@ -16,6 +17,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,19 +67,22 @@ class AppointmentServiceTest {
         userRepository.deleteAll();
 
         doctor = User.builder()
-                .name("Doctor DOe")
+                .name("Doctor Doe")
                 .email("doctor@example.com")
-                .role(Role.ADMIN)
+                .role(Role.DOCTOR)
                 .build();
         patient = User.builder()
                 .name("John Doe")
                 .email("john@example.com")
-                .role(Role.USER)
+                .role(Role.PATIENT)
                 .build();
 
         appointment = new Appointment();
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
+        appointment.setStartDateTime(LocalDateTime.now());
+        appointment.setEndDateTime(LocalDateTime.now().plusHours(1));
+        appointment.setAddress("Ilica 23");
 
         userRepository.save(doctor);
         userRepository.save(patient);
@@ -90,6 +95,13 @@ class AppointmentServiceTest {
         assertNotNull(appointment.getId());
         Optional<Appointment> savedAppointment = appointmentRepository.findById(appointment.getId());
         assertTrue(savedAppointment.isPresent());
+    }
+
+    @Test
+    void saveAppointment_InvalidAppointment_ShouldNOtSaveAppointment() {
+        // Assert
+        appointment.setId(2L);
+        assertThrows(AppointmentExistsException.class, () -> appointmentService.saveAppointment(appointment, appointment.getDoctor().getEmail()));
     }
 
     @Test
@@ -129,7 +141,7 @@ class AppointmentServiceTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals(appointment, result.get());
+        assertEquals(appointment.getId(), result.get().getId());
     }
 
     @Test

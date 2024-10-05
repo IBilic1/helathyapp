@@ -42,7 +42,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> existingAppointments = getAppointmentsByUser(doctor.getEmail());
 
         for (Appointment existingAppointment : existingAppointments) {
-            if (!Objects.equals(appointment.getId(), existingAppointment.getId())) {
+            if (Objects.equals(appointment.getId(), existingAppointment.getId())) {
                 break;
             }
             long existingStartMillis = existingAppointment.getStartDateTime().toInstant(ZoneOffset.UTC).toEpochMilli();
