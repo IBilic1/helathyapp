@@ -1,9 +1,8 @@
-FROM gradle:8.3.0-jdk17 AS build
-COPY --chown=gradle:gradle . /home/gradle/src
+FROM gradle:8.8.0-jdk22 AS build
 WORKDIR /home/gradle/src
-RUN gradle -x test build --no-daemon
-
-FROM openjdk:17-jdk
+COPY --chown=gradle:gradle . .
+RUN gradle clean bootJar --no-daemon --stacktrace
+FROM openjdk:22-jdk
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-ENTRYPOINT ["java","-Dskip.tests", "-Dspring.profiles.active=prod", "-jar","/app/spring-boot-application.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/spring-boot-application.jar"]
