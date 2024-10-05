@@ -41,7 +41,7 @@ spring:
       database: postgresql
     hibernate:
       ddl-auto: update
-    show-sql: 'true'
+    show-sql: 'false'
 
 security:
   urls:

@@ -3,3 +3,6 @@ logging:
     org:
       springframework:
         security: debug
+      zalando:
+        logbook:
+          Logbook: trace

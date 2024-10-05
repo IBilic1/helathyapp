@@ -50,14 +50,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .build();
 
         Optional<User> userOptional = userRepository.findByEmail(userInfoDto.getEmail());
-        log.trace("User is {}", userOptional);
-
         boolean isSystemUser = applicationProps.getSystemUsers().stream()
                 .anyMatch(systemEmail -> Objects.equals(systemEmail, userInfoDto.getEmail()));
         if (isSystemUser) {
             userInfoDto.setRole(SYSTEM_USER);
+        } else {
+            userInfoDto.setRole(Role.PATIENT);
         }
-
         User user = userOptional
                 .map(existingUser -> updateExistingUser(existingUser, userInfoDto))
                 .orElseGet(() -> registerNewUser(userInfoDto));
