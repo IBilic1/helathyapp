@@ -4,11 +4,11 @@ app_name=$1
 image=$2
 namespace=$3
 
-if oc get deployment "$app_name" -n "$namespace" >/dev/null 2>&1; then
+if oc get deployment $app_name -n $namespace >/dev/null 2>&1; then
   echo "Deployment '$app_name' already exists in namespace '$namespace'."
 else
   echo "Creating deployment '$app_name' in namespace '$namespace'..."
-  oc create deployment "$app_name" --image=my-image:latest -n "$namespace"
+  oc create deployment $app_name --image=$app_name:main -n $namespace
 
 if [[ "$?" -eq 0 ]]; then
     oc set image deployment/$app_name $app_name=$image
