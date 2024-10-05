@@ -4,7 +4,6 @@ app_name=$1
 image=$2
 namespace=$3
 
-deploy=`oc get deployment $app_name`
 if oc get deployment "$app_name" -n "$namespace" >/dev/null 2>&1; then
   echo "Deployment '$app_name' already exists in namespace '$namespace'."
 else
