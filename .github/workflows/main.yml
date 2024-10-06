@@ -3,7 +3,7 @@ name: healthyapp
 on:
   push:
     branches:
-      - main
+      - '**'
 
 jobs:
   build:
@@ -38,8 +38,9 @@ jobs:
         run: ./gradlew test --tests "*"
   push_to_registry:
     needs: test
-    name: Push Docker image to Docker Hub
+    name: build docker image
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -63,8 +64,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
   openshift:
      needs:  push_to_registry
+     name: deploy to openshift
      runs-on: ubuntu-latest
      environment: production
+     if: github.ref == 'refs/heads/main'
      steps:
       - name: Checkout
         id: checkout
