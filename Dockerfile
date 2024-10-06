@@ -1,4 +1,4 @@
-FROM gradle:8.8.0-jdk22 AS build
+FROM gradle:8.10.1-jdk22 AS build
 WORKDIR /home/gradle/src
 COPY --chown=gradle:gradle . .
 RUN gradle clean bootJar --no-daemon --stacktrace
