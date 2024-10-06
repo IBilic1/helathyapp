@@ -26,6 +26,7 @@ The Health Center Management System is designed to streamline the management of 
 - PostgreSQL Database
 
 ## Getting Started
+
 ### Prerequisites
 Ensure you have the following software installed on your system:
 - Java 22
