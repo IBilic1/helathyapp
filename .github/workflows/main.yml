@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - '**'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -40,7 +43,7 @@ jobs:
     needs: test
     name: build docker image
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -67,7 +70,7 @@ jobs:
      name: deploy to openshift
      runs-on: ubuntu-latest
      environment: production
-     if: github.ref == 'refs/heads/main'
+     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
      steps:
       - name: Checkout
         id: checkout
