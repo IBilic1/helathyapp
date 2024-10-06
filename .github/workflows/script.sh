@@ -4,8 +4,7 @@ app_name=$1
 image=$2
 namespace=$3
 
-oc create deployment $app_name --image=$app_name:main -n $namespace
-
+deploy=`oc get deployment $app_name`
 if [[ "$?" -eq 0 ]]; then
     oc set image deployment/$app_name $app_name=$image
     oc rollout restart deployment/$app_name
