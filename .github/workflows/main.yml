@@ -84,4 +84,4 @@ jobs:
           namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
       - run: chmod +x "${GITHUB_WORKSPACE}/.github/workflows/script.sh"
       - run: | 
-           "${GITHUB_WORKSPACE}/.github/workflows/script.sh" ${{ secrets.APP_NAME }} ${{ secrets.IMAGE_REGISTRY }}/${{ steps.build_image.outputs.image }}:${{ github.sha }} ${{ secrets.OPENSHIFT_NAMESPACE }}
+           "${GITHUB_WORKSPACE}/.github/workflows/script.sh" ${{ secrets.APP_NAME }} ${{ secrets.IMAGE_REGISTRY }} ${{ secrets.OPENSHIFT_NAMESPACE }}
