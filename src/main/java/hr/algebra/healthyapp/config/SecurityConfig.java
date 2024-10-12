@@ -83,4 +83,26 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public Filter sampleFilter() {
+        return (request, response, filterChain) -> {
+            HttpServletRequest servletRequest = (HttpServletRequest) request;
+            LOG.info(
+                    "Request URI : {}",
+                    servletRequest.getRequestURI());           
+            
+            LOG.info(
+                    "Request cookies : {}",
+                    Arrays.stream(servletRequest.getCookies()).toList().stream().map(Cookie::getName).toString());
+            
+            
+
+            filterChain.doFilter(request, response);
+            LOG.info(
+                    "After filtering the request : {}",
+                    servletRequest.getRequestURI());
+
+        };
+    }
 }
