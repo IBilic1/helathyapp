@@ -54,3 +54,4 @@ application:
 
 server:
   forward-headers-strategy: framework
+  use-forward-headers: true
