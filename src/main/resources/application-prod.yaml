@@ -53,5 +53,8 @@ application:
   system-users: ${SYSTEM_USERS}
 
 server:
-  forward-headers-strategy: framework
-  use-forward-headers: true
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for
