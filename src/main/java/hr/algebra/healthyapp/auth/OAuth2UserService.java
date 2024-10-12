@@ -38,6 +38,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
+        System.out.println("IVANA");
         Optional<Object> oEmail = Optional.ofNullable(oAuth2User.getAttributes().get("email"));
         if (oEmail.isEmpty()) {
             throw new OAuth2AuthenticationException("[ERROR] Email is required");
