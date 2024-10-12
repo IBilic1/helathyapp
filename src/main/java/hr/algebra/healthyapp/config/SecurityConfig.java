@@ -1,7 +1,13 @@
 package hr.algebra.healthyapp.config;
 
+import hr.algebra.healthyapp.advice.ApplicationExceptionHandler;
 import hr.algebra.healthyapp.auth.OAuth2UserService;
+import jakarta.servlet.Filter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +32,8 @@ import java.util.List;
 @EnableScheduling
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    public static final Logger LOG = LoggerFactory.getLogger(ApplicationExceptionHandler.class);
 
     private final OAuth2UserService userDetailsService;
 
@@ -90,13 +98,13 @@ public class SecurityConfig {
             HttpServletRequest servletRequest = (HttpServletRequest) request;
             LOG.info(
                     "Request URI : {}",
-                    servletRequest.getRequestURI());           
-            
+                    servletRequest.getRequestURI());
+
             LOG.info(
                     "Request cookies : {}",
                     Arrays.stream(servletRequest.getCookies()).toList().stream().map(Cookie::getName).toString());
-            
-            
+
+
 
             filterChain.doFilter(request, response);
             LOG.info(
