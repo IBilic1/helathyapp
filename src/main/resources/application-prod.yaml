@@ -51,3 +51,6 @@ security:
 
 application:
   system-users: ${SYSTEM_USERS}
+
+server:
+  forward-headers-strategy: framework
