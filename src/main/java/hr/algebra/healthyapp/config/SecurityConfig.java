@@ -54,6 +54,8 @@ public class SecurityConfig {
         delegate.setCsrfRequestAttributeName(null);
         CsrfTokenRequestHandler requestHandler = delegate::handle;
         http
+                .sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf((csrf) -> csrf
                         .csrfTokenRepository(tokenRepository)
