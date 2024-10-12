@@ -66,5 +66,5 @@ server:
         path: /
         secure: true  # Set to true for HTTPS
         http-only: true
-        same-site: Lax
+        same-site: none
 
