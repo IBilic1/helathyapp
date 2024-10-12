@@ -58,3 +58,9 @@ server:
     use-relative-redirects: true
     protocol-header: x-forwarded-proto
     remote-ip-header: x-forwarded-for
+  servlet:
+    session:
+      cookie:
+        max-age: 172800  # 2 days = 172800 seconds
+      timeout: 2880m  # 2 days = 2880 minutes
+
