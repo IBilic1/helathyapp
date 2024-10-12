@@ -96,18 +96,18 @@ public class SecurityConfig {
     public Filter sampleFilter() {
         return (request, response, filterChain) -> {
             HttpServletRequest servletRequest = (HttpServletRequest) request;
-            LOG.info(
+            LOG.trace(
                     "Request URI : {}",
                     servletRequest.getRequestURI());
 
-            LOG.info(
+            LOG.trace(
                     "Request cookies : {}",
                     Arrays.stream(servletRequest.getCookies()).toList().stream().map(Cookie::getName).toString());
 
 
 
             filterChain.doFilter(request, response);
-            LOG.info(
+            LOG.trace(
                     "After filtering the request : {}",
                     servletRequest.getRequestURI());
 
