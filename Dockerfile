@@ -5,4 +5,4 @@ RUN gradle clean bootJar --no-daemon --stacktrace
 FROM openjdk:24-jdk
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app/spring-boot-application.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=test", "-jar", "/app/spring-boot-application.jar"]
