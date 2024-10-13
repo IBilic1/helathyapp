@@ -45,7 +45,7 @@ jobs:
     name: Build and push Docker image
     runs-on: ubuntu-latest
     if: |
-      github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+      github.event_name == 'push' && github.ref == 'refs/heads/develop'
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -70,26 +70,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-  openshift_main:
-    needs: push_to_registry
-    name: Deploy to OpenShift (main)
-    runs-on: ubuntu-latest
-    environment: production
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Log in to OpenShift
-        uses: redhat-actions/oc-login@v1
-        with:
-          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
-          openshift_token: ${{ secrets.OPENSHIFT_SECRET }}
-          insecure_skip_tls_verify: true
-          namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
-      - run: chmod +x "${GITHUB_WORKSPACE}/.github/workflows/script.sh"
-      - run: |
-          "${GITHUB_WORKSPACE}/.github/workflows/script.sh" ${{ secrets.APP_NAME }} ${{ secrets.IMAGE_REGISTRY }} ${{ secrets.OPENSHIFT_NAMESPACE }}
 
   openshift_develop:
     needs: push_to_registry
