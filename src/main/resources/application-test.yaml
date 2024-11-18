@@ -30,9 +30,9 @@ spring:
             user-name-attribute: sub
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: user
-    url: jdbc:postgresql://localhost:5432/healthcent
-    password: secret
+    username: ${DATABASE_USER}
+    url: ${DATABASE_URL}
+    password: ${DATABASE_PASS}
   jpa:
     properties:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -40,18 +40,17 @@ spring:
         format_sql: 'true'
       database: postgresql
     hibernate:
-      ddl-auto: create-drop
-    show-sql: 'true'
+      ddl-auto: update
+    show-sql: 'false'
 
 security:
   urls:
-    allowed-origins: http://192.168.8.132:3000
-    default-error: http://192.168.8.132:3000/error
-    default-success: http://192.168.8.132:3000/home
+    allowed-origins: ${ALLOWED_ORIGINS}
+    default-error: ${DEFAULT_ERROR_REDIRECT_URL}
+    default-success: ${DEFAULT_ERROR_REDIRECT_URL}
 
 application:
-  system-users:
-    - ibilic1@racunarstvo.hr
+  system-users: ${SYSTEM_USERS}
 
 server:
   forward-headers-strategy: native
@@ -63,6 +62,7 @@ server:
     session:
       timeout: 2880m  # 2 days = 2880 minutes
       cookie:
-        max-age: 172800  # 2 days
+        max-age: 172800
         secure: false
         same-site: none
+
