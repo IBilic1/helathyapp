@@ -53,8 +53,16 @@ application:
   system-users: ${SYSTEM_USERS}
 
 server:
+  forward-headers-strategy: native
+  tomcat:
+    use-relative-redirects: true
+    protocol-header: x-forwarded-proto
+    remote-ip-header: x-forwarded-for
   servlet:
     session:
-      timeout: 2880m
+      timeout: 2880m  # 2 days = 2880 minutes
       cookie:
-        max-age: 3600
+        max-age: 172800
+        secure: false
+        same-site: none
+
