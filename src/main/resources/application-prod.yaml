@@ -68,4 +68,6 @@ server:
         secure: true  # Set to true for HTTPS
         http-only: true
         same-site: none
-
+logging:
+  level:
+    root: info
