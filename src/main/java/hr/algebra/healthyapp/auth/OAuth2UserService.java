@@ -38,7 +38,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
-        System.out.println("EVA");
         Optional<Object> oEmail = Optional.ofNullable(oAuth2User.getAttributes().get("email"));
         if (oEmail.isEmpty()) {
             throw new OAuth2AuthenticationException("[ERROR] Email is required");
@@ -53,6 +52,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepository.findByEmail(userInfoDto.getEmail());
         boolean isSystemUser = applicationProps.getSystemUsers().stream()
                 .anyMatch(systemEmail -> Objects.equals(systemEmail, userInfoDto.getEmail()));
+        log.info("Is system user {}, email: {}, system user email: {}", isSystemUser, userInfoDto.getEmail(), applicationProps.getSystemUsers().get(0));
         if (isSystemUser) {
             userInfoDto.setRole(SYSTEM_USER);
         } else {
