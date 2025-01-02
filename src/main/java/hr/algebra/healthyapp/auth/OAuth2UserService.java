@@ -52,7 +52,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<User> userOptional = userRepository.findByEmail(userInfoDto.getEmail());
         boolean isSystemUser = applicationProps.getSystemUsers().stream()
                 .anyMatch(systemEmail -> Objects.equals(systemEmail, userInfoDto.getEmail()));
-        log.info("Is system user {}, email: {}, system user email: {}", isSystemUser, userInfoDto.getEmail(), applicationProps.getSystemUsers().get(0));
+        System.out.printf("Is system user %s, email: %s, system user email: %s%n", isSystemUser, userInfoDto.getEmail(), applicationProps.getSystemUsers().get(0));
         if (isSystemUser) {
             userInfoDto.setRole(SYSTEM_USER);
         } else {
