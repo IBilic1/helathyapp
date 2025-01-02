@@ -50,7 +50,8 @@ security:
     default-success: ${DEFAULT_ERROR_REDIRECT_URL}
 
 application:
-  system-users: ${SYSTEM_USERS}
+  system-users:
+    - ${SYSTEM_USER}
 
 server:
   forward-headers-strategy: native
