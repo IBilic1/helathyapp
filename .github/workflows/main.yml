@@ -10,7 +10,7 @@ on:
       - develop
 jobs:
   build:
-    name: Build
+    name: build
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew build
   test:
     needs: build
-    name: Test
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -42,7 +42,7 @@ jobs:
         run: ./gradlew test --tests "*"
   push_to_registry:
     needs: test
-    name: Build and push Docker image
+    name: build and push Docker image
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
@@ -73,7 +73,7 @@ jobs:
 
   openshift_main:
     needs: push_to_registry
-    name: Deploy to OpenShift (main)
+    name: deploy to OpenShift (main)
     runs-on: ubuntu-latest
     environment: production
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -93,7 +93,7 @@ jobs:
 
   openshift_develop:
     needs: push_to_registry
-    name: Deploy to OpenShift (develop)
+    name: deploy to OpenShift (develop)
     runs-on: ubuntu-latest
     environment: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
